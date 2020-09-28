@@ -1,13 +1,10 @@
 version: '3.7'
 
-# Define services
 services:
-  # App Service
   app:
-    # Configuration for building the docker image for the service
-    image: callicoder/swarm-demo-app:1.0.0
+    image: brentgreeff/swarm-demo-app:1.0.0
     ports:
-      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+      - "8080:8080"
     deploy:
       replicas: 3
       resources:
@@ -15,15 +12,14 @@ services:
           cpus: "0.2"
           memory: 50M
       restart_policy:
-        condition: on-failure  
-    environment: # Pass environment variables to the service
-      REDIS_URL: redis:6379    
+        condition: on-failure
+    environment:
+      REDIS_URL: redis:6379
     depends_on:
      - redis
-    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+    networks:
       - webnet
 
-  # Redis Service   
   redis:
     image: redis:alpine
     ports:
@@ -36,8 +32,8 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == manager]
-        
+
 networks:
   webnet:
     driver: overlay
-    attachable: true    
+    attachable: true
